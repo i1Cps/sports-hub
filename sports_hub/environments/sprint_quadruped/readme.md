@@ -2,7 +2,7 @@
   <h1>Sprint Quadruped</h1>
 </div>
 
-<a href="https://github.com/" target="_blank">
+<a href="https://demo.sports-hub.tech" target="_blank">
   <img width="1818" height="730" alt="sprint_quadruped_github" src="https://github.com/user-attachments/assets/3cc72458-9624-4eab-9251-48014a90fe3c" />
 </a>
 
