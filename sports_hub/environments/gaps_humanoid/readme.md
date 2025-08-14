@@ -2,12 +2,14 @@
   <h1>Gaps Humanoid</h1>
 </div>
 
-<img width="1818" height="730" alt="humanoid_gaps" src="https://github.com/user-attachments/assets/318e0066-2bb2-49d6-bb1b-9b88a7f421b8" />
+<a href="https://demo.sports-hub.tech">
+  <img width="1818" height="730" alt="gaps_humanoid_github" src="https://github.com/user-attachments/assets/d1bceeaf-2417-4017-9a52-267119b18e69" />
+</a>
 
 <br/>
 
 <p align="center">
-  <a href="https://i1cps.github.io/Sports-Hub-Website/"><strong>🔗 Click for live demo </strong></a>
+  <a href="https://demo.sports-hub.tech"><strong>🔗 Click for live demo </strong></a>
 </p>
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png)
