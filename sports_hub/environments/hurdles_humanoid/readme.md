@@ -2,14 +2,14 @@
   <h1>Hurdles Humanoid</h1>
 </div>
 
-<a href="demo.sports-hub.tech">
+<a href="https://demo.sports-hub.tech">
   <img width="1818" height="730" alt="hurdles_humanoid_github" src="https://github.com/user-attachments/assets/7bfc9921-9ba7-49fb-938a-a0e0d04775bd" />
 </a>
 
 <br/>
 
 <p align="center">
-  <a href="demo.sports-hub.tech"><strong>🔗 Click for live demo </strong></a>
+  <a href="https://demo.sports-hub.tech"><strong>🔗 Click for live demo </strong></a>
 </p>
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png)
