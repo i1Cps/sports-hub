@@ -2,12 +2,14 @@
   <h1>Fetch Humanoid</h1>
 </div>
 
-<img width="1818" height="730" alt="humanoid_fetch" src="https://github.com/user-attachments/assets/8e763bb9-3372-41b8-b0c8-f710de717687" />
+<a href="https://demo.sports-hub.tech">
+  <img width="1818" height="730" alt="fetch_humanoid_github" src="https://github.com/user-attachments/assets/10ae0ced-98ed-4866-99a2-c55d9b31a6d4" />
+</a>
 
 <br/>
 
 <p align="center">
-  <a href="https://i1cps.github.io/Sports-Hub-Website/"><strong>🔗 Click for live demo </strong></a>
+  <a href="https://demo.sports-hub.tech"><strong>🔗 Click for live demo </strong></a>
 </p>
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png)
