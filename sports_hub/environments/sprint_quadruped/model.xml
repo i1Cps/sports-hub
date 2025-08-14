@@ -1,0 +1,244 @@
+
+<mujoco model="sprint_quadruped">
+  <option timestep="0.004" iterations="1" ls_iterations="5" solver="Newton">
+    <flag eulerdamp="disable"/>
+  </option>
+
+  <statistic center="0 0 0.1" extent="10.0" meansize="0.04"/>
+
+  <visual>
+    <rgba force="1 0 0 1" haze = "0.71 0.71 0.71 0.51" fog="0.71 0.71 0.71 1"/>
+    <global azimuth="140" elevation="-20" offwidth="1280" offheight="720"/>
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.71 0.71 0.71" rgb2="0.71 0.71 0.71" width="800" height="800"/>
+    <texture name="grass" type="2d" builtin="checker" width="512" height="512" rgb1="0.133 0.745 0.133" rgb2="0.486 0.988 0.0"/>
+    <texture name="trunk" type="cube" builtin="flat" width="128" height="128" rgb1="0.545 0.271 0.075" rgb2="0.545 0.271 0.075"/>
+    <texture name="foliage" type="cube" builtin="flat" width="128" height="128" rgb1="0.133 0.545 0.133" rgb2="0.133 0.545 0.133"/>
+    <texture name="black_white_checkers" type="2d" builtin="checker" width="512" height="512" rgb1="0 0 0" rgb2="1 1 1"/>
+    <texture name="orange_brown_checkers" type="2d" builtin="checker" width="512" height="512" rgb1="0.988 0.729 0.012" rgb2="0.918 0.714 0.463"/>
+
+    <material name="body" rgba=".7 .5 .3 1" specular="0.9" shininess="0.8"/>
+    <material name="grass" texture="grass" texrepeat="1 1" texuniform="true" reflectance="0.2"/>
+    <material name="trunk" texture="trunk" texuniform="true"/>
+    <material name="track" texture="orange_brown_checkers" texrepeat="1 1" texuniform="true" reflectance="0.2"/>
+    <material name="foliage" texture="foliage" texuniform="true"/>
+    <material name="finish_line" texture="black_white_checkers" texrepeat="2 10"/>
+  </asset>
+
+  <default>
+    <geom conaffinity="0" condim="3" contype="0"/>
+    <default class="quadruped">
+      <geom type="capsule" material="body" density="5"/>
+    </default>
+    <joint armature="1" damping="1" limited="true"/>
+  </default>
+
+  <worldbody>
+    <!-- Building out the track -->
+    <geom name="track" type="plane" material="track" pos="30 0 0" size="50 5 0.125" rgba="0.2 0.2 0.2 1.0"/>
+    <geom name="side_railing1" type="box" pos="30 5 0.2" size="50.05 0.05 0.06" rgba="0.9 0.3 0.3 0.61"/>
+    <geom name="side_railing2" type="box" pos="30 -5 0.2" size="50.05 0.05 0.06" rgba="0.9 0.3 0.3 0.61"/>
+    <geom name="back_railing" type="box" pos="-20 0 0.2" size="0.05 5.05 0.06" rgba="0.9 0.3 0.3 0.61"/>
+    <geom name="front_railing" type="box" pos="80 0 0.2" size="0.05 5.05 0.06" rgba="0.9 0.3 0.3 0.61"/>
+    <geom name="finish_line" type="box" pos="70 0 0.001" size="1 5 0.001" material="finish_line"/>
+
+    <geom type="plane" name="grass_right" material="grass" pos="30 35 0.150" size="50 30 0.125" rgba="0.2 0.2 0.2 1.0"/>
+    <geom type="plane" name="grass_left" material="grass" pos="30 -35 0.150" size="50 30 0.125" rgba="0.2 0.2 0.2 1.0"/>
+    <geom type="plane" name="grass_front" material="grass" pos="111 0 0.150" size="31 65 0.125" rgba="0.2 0.2 0.2 1.0"/>
+    <geom type="plane" name="grass_back" material="grass" pos="-51 0 0.150" size="31 65 0.125" rgba="0.2 0.2 0.2 1.0" />
+    <geom type="plane" name="grass" material="grass" pos="0 0 -2.150" size="0 0 0.125" rgba="0.2 0.2 0.2 1.0"/> 
+
+    <light name="ambient_light" pos="0 0 5000" dir="0 0 -1" ambient="0.41 0.41 0.41" diffuse="0.3 0.3 0.3" specular="0.1 0.1 0.1" mode="fixed" castshadow="false"/>
+
+    <!-- Quadruped -->
+    <body name="quadruped_torso" childclass="quadruped" pos="0 0 0.75">
+      <light name="tracking_light" pos="0 0 7" dir="0 0 -1" specular="0.8 0.8 0.8" mode="trackcom"/>
+      <camera name="cam_default" mode="trackcom" pos="4.660 -4.778 1.745" xyaxes="0.708 0.707 0.000 -0.240 0.241 0.940"/>
+      <site name="quadruped" size="0.01" pos="0 0 0"/>
+      <geom name="quadruped_torso" pos="0 0 0" size="0.25" type="sphere"/>
+      <joint name="quadruped_root" type="free" armature="0" damping="0" limited="false" margin="0.01" pos="0 0 0"/>
+
+      <body name="quadruped_front_left_leg" pos="0 0 0">
+        <geom name="quadruped_front_left_aux" fromto="0.0 0.0 0.0 0.2 0.2 0.0" size="0.08" type="capsule"/>
+        <body name="quadruped_front_left_aux" pos="0.2 0.2 0">
+          <joint name="quadruped_front_left_hip" axis="0 0 1" pos="0.0 0.0 0.0" range="-30 30" type="hinge"/>
+          <geom name="quadruped_front_left_leg" fromto="0.0 0.0 0.0 0.2 0.2 0.0" size="0.08" type="capsule"/>
+          <body name="quadruped_front_left_knee" pos="0.2 0.2 0">
+            <joint name="quadruped_front_left_ankle" axis="-1 1 0" pos="0.0 0.0 0.0" range="30 70" type="hinge"/>
+            <geom name="quadruped_front_left_ankle" fromto="0.0 0.0 0.0 0.4 0.4 0.0" size="0.08" type="capsule"/>
+            <geom name="quadruped_front_left_foot" pos="0.4 0.4 0" size="0.08" type="sphere" mass="0"/>
+          </body>
+        </body>
+      </body>
+
+      <body name="quadruped_front_right_leg" pos="0 0 0">
+        <geom name="quadruped_front_right_aux" fromto="0.0 0.0 0.0 -0.2 0.2 0.0" size="0.08" type="capsule"/>
+        <body name="quadruped_front_right_aux" pos="-0.2 0.2 0">
+          <joint name="quadruped_front_right_hip" axis="0 0 1" pos="0.0 0.0 0.0" range="-30 30" type="hinge"/>
+          <geom name="quadruped_front_right_leg" fromto="0.0 0.0 0.0 -0.2 0.2 0.0" size="0.08" type="capsule"/>
+          <body name="quadruped_front_right_knee" pos="-0.2 0.2 0">
+            <joint name="quadruped_front_right_ankle" axis="1 1 0" pos="0.0 0.0 0.0" range="-70 -30" type="hinge"/>
+            <geom name="quadruped_front_right_ankle" fromto="0.0 0.0 0.0 -0.4 0.4 0.0" size="0.08" type="capsule"/>
+            <geom name="quadruped_front_right_foot" pos="-0.4 0.4 0" size="0.08" type="sphere" mass="0"/>
+          </body>
+        </body>
+      </body>
+
+      <body name="quadruped_back_left_leg" pos="0 0 0">
+        <geom name="quadruped_back_left_aux" fromto="0.0 0.0 0.0 -0.2 -0.2 0.0" size="0.08" type="capsule"/>
+        <body name="quadruped_back_left_aux" pos="-0.2 -0.2 0">
+          <joint name="quadruped_back_left_hip" axis="0 0 1" pos="0.0 0.0 0.0" range="-30 30" type="hinge"/>
+          <geom name="quadruped_back_left_leg" fromto="0.0 0.0 0.0 -0.2 -0.2 0.0" size="0.08" type="capsule"/>
+          <body name="quadruped_back_left_knee" pos="-0.2 -0.2 0">
+            <joint name="quadruped_back_left_ankle" axis="-1 1 0" pos="0.0 0.0 0.0" range="-70 -30" type="hinge"/>
+            <geom name="quadruped_back_left_ankle" fromto="0.0 0.0 0.0 -0.4 -0.4 0.0" size="0.08" type="capsule"/>
+            <geom name="quadruped_back_left_foot" pos="-0.4 -0.4 0" size="0.08" type="sphere" mass="0"/>
+          </body>
+        </body>
+      </body>
+
+      <body name="quadruped_back_right_leg" pos="0 0 0">
+        <geom name="quadruped_back_right_aux" fromto="0.0 0.0 0.0 0.2 -0.2 0.0" size="0.08" type="capsule"/>
+        <body name="quadruped_back_right_aux" pos="0.2 -0.2 0">
+          <joint name="quadruped_back_right_hip" axis="0 0 1" pos="0.0 0.0 0.0" range="-30 30" type="hinge"/>
+          <geom name="quadruped_back_right_leg" fromto="0.0 0.0 0.0 0.2 -0.2 0.0" size="0.08" type="capsule"/>
+          <body name="quadruped_back_right_knee" pos="0.2 -0.2 0">
+            <joint name="quadruped_back_right_ankle" axis="1 1 0" pos="0.0 0.0 0.0" range="30 70" type="hinge"/>
+            <geom name="quadruped_back_right_ankle" fromto="0.0 0.0 0.0 0.4 -0.4 0.0" size="0.08" type="capsule"/>
+            <geom name="quadruped_back_right_foot" pos="0.4 -0.4 0" size="0.08" type="sphere" mass="0"/>
+          </body>
+        </body>
+      </body>
+    </body>
+
+    <body name="trees">
+      <body name="tree1" pos="40 25 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree2" pos="25 28 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree3" pos="45 30 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree4" pos="20 -25 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree5" pos="30 -30 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree6" pos="50 22 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree7" pos="15 27 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree8" pos="35 35 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree9" pos="10 20 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree10" pos="55 15 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree11" pos="5 -20 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree12" pos="45 -25 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree13" pos="25 -30 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree14" pos="40 -35 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree15" pos="30 40 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree16" pos="15 35 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree17" pos="50 -15 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree18" pos="10 -25 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree19" pos="55 -10 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree20" pos="5 10 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree21" pos="45 30 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree22" pos="20 35 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree23" pos="35 -35 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree24" pos="30 -40 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree25" pos="15 -35 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+    </body>
+  </worldbody>
+
+    <contact>
+      <!-- Floor contacts -->
+      <pair geom1="quadruped_front_left_foot" geom2="track" friction="1 1 0.5 0.5 0.5"/>
+      <pair geom1="quadruped_front_right_foot" geom2="track" friction="1 1 0.5 0.5 0.5"/>
+      <pair geom1="quadruped_back_left_foot" geom2="track" friction="1 1 0.5 0.5 0.5"/>
+      <pair geom1="quadruped_back_right_foot" geom2="track" friction="1 1 0.5 0.5 0.5"/>
+    </contact>
+
+    <!-- Quadruped has 8 Actuators -->
+    <actuator>
+      <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="quadruped_front_left_hip" gear="150"/>
+      <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="quadruped_front_left_ankle" gear="150"/>
+      <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="quadruped_front_right_hip" gear="150"/>
+      <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="quadruped_front_right_ankle" gear="150"/>
+      <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="quadruped_back_left_hip" gear="150"/>
+      <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="quadruped_back_left_ankle" gear="150"/>
+      <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="quadruped_back_right_hip" gear="150"/>
+      <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="quadruped_back_right_ankle" gear="150"/>
+    </actuator>
+
+    <keyframe>
+    <key name="init" qpos="0 0.0 0.55 1.0 0.0 0.0 0.0 0.0 1.0 0.0 -1.0 0.0 -1.0 0.0 1.0"/>
+    </keyframe>
+</mujoco>
+

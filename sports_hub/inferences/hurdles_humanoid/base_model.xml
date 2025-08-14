@@ -1,0 +1,537 @@
+<mujoco model="hurdles humanoid">
+  <option timestep="0.004" iterations="4" ls_iterations="8" solver="Newton">
+    <flag eulerdamp="disable"/>
+  </option>
+
+  <statistic center="0 0 0.1" extent="10.0" meansize="0.04"/>
+
+  <visual>
+    <rgba force="1 0 0 1" haze = "0.71 0.71 0.71 0.51" fog="0.71 0.71 0.71 1" rangefinder="1 1 0.1 0.11"/>
+    <global azimuth="140" elevation="-20" offwidth="1920" offheight="1080"/>
+    <!-- <quality shadowsize="8192" offsamples="8" numslices="32" numstacks="24" numquads="16"/> -->
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.71 0.71 0.71" rgb2="0.71 0.71 0.71" width="800" height="800"/>
+    <texture name="grey_squares" builtin="checker" height="800" width="800" rgb1="0.71 0.71 0.71" rgb2="0.71 0.71 0.71" type="2d" mark="edge" markrgb="1 1 1"/>
+    <texture name="blue_white_gradient" type="2d" builtin="gradient" width="256" height="256" rgb1="0.0 0.6 0.6" rgb2="1.0 1.0 1.0" random="0.12"/>      
+    <texture name="black_white_checkers" type="2d" builtin="checker" width="512" height="512" rgb1="0 0 0" rgb2="1 1 1"/>
+
+    <material name="body" rgba=".7 .5 .3 1" specular="0.9" shininess="0.8"/>
+    <material name="floor" reflectance="0" texrepeat="1 1" texuniform="true" texture="grey_squares"/>
+    <material name="hurdle" texture="blue_white_gradient" texuniform="true" specular="0.3" shininess="0.6"/>
+    <material name="hurdle_feet" rgba="1 1 1 0.51" texuniform="true" specular="0.3" shininess="0.6"/>
+    <material name="finish_line" texture="black_white_checkers" texrepeat="2 10"/>
+  </asset>
+
+  <default>
+    <geom contype="0" conaffinity="0" condim="3"/>
+    <joint armature="1" damping="1" limited="true"/>
+    <motor ctrllimited="true" ctrlrange="-.4 .4"/>
+    <default class="humanoid">
+      <geom type="capsule" material="body"/>
+    </default>
+    <default class="hurdle">
+      <geom material="hurdle"/>
+    </default>
+    <default class="hurdle_feet">
+      <geom material="hurdle_feet"/>
+    </default>
+  </default>
+
+  <worldbody>
+    <!-- Building out the track -->
+    <geom name="floor" pos="61 0 0" size="64 5 0.010" type="box" material="floor"/>
+    <geom name="floor_bottom" pos="0 0 -10" size="0 0 0.010" type="plane" material="floor"/>
+    <geom name="side_railing1" type="box" pos="61 5.1 0.2" size="64. 0.05 0.06" rgba="0.9 0.3 0.3 0.31"/>
+    <geom name="side_railing2" type="box" pos="61 -5.1 0.2" size="64. 0.05 0.06" rgba="0.9 0.3 0.3 0.31"/>
+    <geom name="front_railing" type="box" pos="125.0 0.0 0.2" size="0.05 5.15 0.06" rgba="0.9 0.3 0.3 0.31"/>
+    <geom name="back_railing" type="box" pos="-3.0 0.0 0.2" size="0.05 5.15 0.06" rgba="0.9 0.3 0.3 0.31"/>
+    <geom name="finish_line" type="box" pos="60 0 0.01" size="1 5 0.01" material="finish_line"/>
+
+    <!-- Humanoid -->
+    <body name="humanoid" childclass="humanoid" pos="0 0 1.40">
+
+      <light name="tracking_light" pos="0 0 7" dir="0 0 -1" specular="0.8 0.8 0.8" mode="trackcom"/>
+      <camera name="cam_default" mode="trackcom" pos="-6.716 -1.785 2.220" xyaxes="-0.046 -0.999 -0.000 0.235 -0.011 0.972"/>
+      <site name="humanoid" size="0.01" pos="-0 0 -0"/>
+
+      <joint name="humanoid_root" type="free" armature="0" damping="0" limited="false" pos="0 0 0" stiffness="0"/>
+      <geom name="humanoid_torso" fromto="0 -.07 0 0 .07 0" size="0.07" type="capsule"/>
+
+      <body name="humanoid_head" pos="0 0 0.19">
+        <geom name="humanoid_head" pos="0 0 0" size=".09" type="sphere"/>
+        <site name="humanoid_ray_00" fromto=".23 -.02  -.03 .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_01" fromto=".23 -.01  -.03 .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_02" fromto=".23   0   -.03 .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_03" fromto=".23  .01  -.03 .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_04" fromto=".23  .02  -.03 .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+
+        <site name="humanoid_ray_05" fromto=".22 -.02  -.03  .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_06" fromto=".22 -.01  -.03  .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_07" fromto=".22   0   -.03  .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_08" fromto=".22  .01  -.03  .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_09" fromto=".22  .02  -.03  .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+
+        <site name="humanoid_ray_10" fromto=".21 -.02  -.03 .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_11" fromto=".21 -.01  -.03 .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_12" fromto=".21   0   -.03 .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_13" fromto=".21  .01  -.03 .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_14" fromto=".21  .02  -.03 .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+
+        <site name="humanoid_ray_15" fromto=".2 -.02  -.03 .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_16" fromto=".2 -.01  -.03 .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_17" fromto=".2   0   -.03 .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_18" fromto=".2  .01  -.03 .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_19" fromto=".2  .02  -.03 .17 0 .0" type="capsule" size=".002 .1" group="4"/>
+
+        <site name="humanoid_ray_20" fromto=".19 -.02  -.03 .17  0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_21" fromto=".19 -.01  -.03 .17  0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_22" fromto=".19   0   -.03 .17  0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_23" fromto=".19  .01  -.03 .17  0 .0" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_24" fromto=".19  .02  -.03 .17  0 .0" type="capsule" size=".002 .1" group="4"/>
+
+        <site name="humanoid_ray_25" fromto=".18 -.02  -.03 .17  0 .00" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_26" fromto=".18 -.01  -.03 .17  0 .00" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_27" fromto=".18   0   -.03 .17  0 .00" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_28" fromto=".18  .01  -.03 .17  0 .00" type="capsule" size=".002 .1" group="4"/>
+        <site name="humanoid_ray_29" fromto=".18  .02  -.03 .17  0 .00" type="capsule" size=".002 .1" group="4"/>
+      </body>
+
+      <geom name="humanoid_uwaist" fromto="-.01 -.06 -.12 -.01 .06 -.12" size="0.06" type="capsule"/>
+      <body name="humanoid_lwaist" pos="-.01 0 -0.260" quat="1.000 0 -0.002 0">
+        <geom name="humanoid_lwaist" fromto="0 -.06 0 0 .06 0" size="0.06" type="capsule"/>
+        <joint name="humanoid_abdomen_z" armature="0.02" axis="0 0 1" damping="5" pos="0 0 0.065" range="-45 45" stiffness="20" type="hinge"/>
+        <joint name="humanoid_abdomen_y" armature="0.02" axis="0 1 0" damping="5" pos="0 0 0.065" range="-75 30" stiffness="10" type="hinge"/>
+        <body name="humanoid_pelvis" pos="0 0 -0.165" quat="1.000 0 -0.002 0">
+          <joint name="humanoid_abdomen_x" armature="0.02" axis="1 0 0" damping="5" pos="0 0 0.1" range="-35 35" stiffness="10" type="hinge"/>
+          <geom name="humanoid_butt" fromto="-.02 -.07 0 -.02 .07 0" size="0.09" type="capsule"/>
+          <body name="humanoid_right_thigh" pos="0 -0.1 -0.04">
+            <joint name="humanoid_right_hip_x" armature="0.01" axis="1 0 0" damping="5" pos="0 0 0" range="-25 5" stiffness="10" type="hinge"/>
+            <joint name="humanoid_right_hip_z" armature="0.01" axis="0 0 1" damping="5" pos="0 0 0" range="-60 35" stiffness="10" type="hinge"/>
+            <joint name="humanoid_right_hip_y" armature="0.0080" axis="0 1 0" damping="5" pos="0 0 0" range="-110 20" stiffness="20" type="hinge"/>
+            <geom name="humanoid_right_thigh" fromto="0 0 0 0 0.01 -.34" size="0.06" type="capsule"/>
+            <body name="humanoid_right_shin" pos="0 0.01 -0.403">
+              <joint name="humanoid_right_knee" armature="0.0060" axis="0 -1 0" pos="0 0 .02" range="-160 -2" type="hinge"/>
+              <geom name="humanoid_right_shin" fromto="0 0 0 0 0 -.3" size="0.049" type="capsule"/>
+              <body name="humanoid_right_foot" pos="0 0 -0.45">
+                <geom name="humanoid_right_foot" pos="0 0 0.1" size="0.075" type="sphere"/>
+              </body>
+            </body>
+          </body>
+          <body name="humanoid_left_thigh" pos="0 0.1 -0.04">
+            <joint name="humanoid_left_hip_x" armature="0.01" axis="-1 0 0" damping="5" pos="0 0 0" range="-25 5" stiffness="10" type="hinge"/>
+            <joint name="humanoid_left_hip_z" armature="0.01" axis="0 0 -1" damping="5" pos="0 0 0" range="-60 35" stiffness="10" type="hinge"/>
+            <joint name="humanoid_left_hip_y" armature="0.01" axis="0 1 0" damping="5" pos="0 0 0" range="-110 20" stiffness="20" type="hinge"/>
+            <geom name="humanoid_left_thigh" fromto="0 0 0 0 -0.01 -.34" size="0.06" type="capsule"/>
+            <body name="humanoid_left_shin" pos="0 -0.01 -0.403">
+              <joint name="humanoid_left_knee" armature="0.0060" axis="0 -1 0" pos="0 0 .02" range="-160 -2" stiffness="1" type="hinge"/>
+              <geom name="humanoid_left_shin" fromto="0 0 0 0 0 -.3" size="0.049" type="capsule"/>
+              <body name="humanoid_left_foot" pos="0 0 -0.45">
+                <geom name="humanoid_left_foot" type="sphere" size="0.075" pos="0 0 0.1"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="humanoid_right_upper_arm" pos="0 -0.17 0.06">
+        <joint name="humanoid_right_shoulder1" armature="0.0068" axis="2 1 1" pos="0 0 0" range="-85 60" stiffness="1" type="hinge"/>
+        <joint name="humanoid_right_shoulder2" armature="0.0051" axis="0 -1 1" pos="0 0 0" range="-85 60" stiffness="1" type="hinge"/>
+        <geom name="humanoid_right_uarm" fromto="0 0 0 .16 -.16 -.16" size="0.04 0.16" type="capsule"/>
+        <body name="humanoid_right_lower_arm" pos=".18 -.18 -.18">
+          <joint name="humanoid_right_elbow" armature="0.0028" axis="0 -1 1" pos="0 0 0" range="-90 50" stiffness="0" type="hinge"/>
+          <geom name="humanoid_right_larm" fromto="0.01 0.01 0.01 .17 .17 .17" size="0.031" type="capsule"/>
+          <geom name="humanoid_right_hand" pos=".18 .18 .18" size="0.04" type="sphere"/>
+        </body>
+      </body>
+      <body name="humanoid_left_upper_arm" pos="0 0.17 0.06">
+        <joint name="humanoid_left_shoulder1" armature="0.0068" axis="2 -1 1" pos="0 0 0" range="-60 85" stiffness="1" type="hinge"/>
+        <joint name="humanoid_left_shoulder2" armature="0.0051" axis="0 1 1" pos="0 0 0" range="-60 85" stiffness="1" type="hinge"/>
+        <geom name="humanoid_left_uarm" fromto="0 0 0 .16 .16 -.16" size="0.04 0.16" type="capsule"/>
+        <body name="humanoid_left_lower_arm" pos=".18 .18 -.18">
+          <joint name="humanoid_left_elbow" armature="0.0028" axis="0 -1 -1" pos="0 0 0" range="-90 50" stiffness="0" type="hinge"/>
+          <geom name="humanoid_left_larm" fromto="0.01 -0.01 0.01 .17 -.17 .17" size="0.031" type="capsule"/>
+          <geom name="humanoid_left_hand" pos=".18 -.18 .18" size="0.04" type="sphere"/>
+        </body>
+      </body>
+    </body>
+
+    <body name="hurdle_array" pos="0 0 0" >
+        <!-- Hurdle row 1 -->
+        <body name="starting_hurdle_1_0" pos="7 0 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/> 
+        </body>
+
+        <body name="starting_hurdle_1_1" pos="7 1 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_1_-1" pos="7 -1 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_1_2" pos="7 2 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_1_-2" pos="7 -2 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_1_3" pos="7 3 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_1_-3" pos="7 -3 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_1_4" pos="7 4 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_1_-4" pos="7 -4 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <!-- Hurdle row 2 -->
+        <body name="starting_hurdle_2_0" pos="14 0 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_2_1" pos="14 1 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_2_-1" pos="14 -1 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_2_2" pos="14 2 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_2_-2" pos="14 -2 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_2_3" pos="14 3 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_2_-3" pos="14 -3 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_2_4" pos="14 4 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_2_-4" pos="14 -4 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <!-- Hurdle row 3 -->
+        <body name="starting_hurdle_3_0" pos="21 0 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_3_1" pos="21 1 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_3_-1" pos="21 -1 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_3_2" pos="21 2 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_3_-2" pos="21 -2 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_3_3" pos="21 3 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_3_-3" pos="21 -3 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_3_4" pos="21 4 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_3_-4" pos="21 -4 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <!-- Hurdle row 4 -->
+        <body name="starting_hurdle_4_0" pos="28 0 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_4_1" pos="28 1 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_4_-1" pos="28 -1 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_4_2" pos="28 2 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_4_-2" pos="28 -2 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_4_3" pos="28 3 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_4_-3" pos="28 -3 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_4_4" pos="28 4 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_4_-4" pos="28 -4 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <!-- Hurdle row 5 -->
+        <body name="starting_hurdle_5_0" pos="35 0 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_5_1" pos="35 1 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_5_-1" pos="35 -1 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_5_2" pos="35 2 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_5_-2" pos="35 -2 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_5_3" pos="35 3 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_5_-3" pos="35 -3 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_5_4" pos="35 4 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_5_-4" pos="35 -4 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <!-- Hurdle row 6 -->
+        <body name="starting_hurdle_6_0" pos="42 0 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_6_1" pos="42 1 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_6_-1" pos="42 -1 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_6_2" pos="42 2 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_6_-2" pos="42 -2 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_6_3" pos="42 3 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_6_-3" pos="42 -3 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_6_4" pos="42 4 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_6_-4" pos="42 -4 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <!-- Hurdle row 7 -->
+        <body name="starting_hurdle_7_0" pos="49 0 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_7_1" pos="49 1 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_7_-1" pos="49 -1 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_7_2" pos="49 2 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_7_-2" pos="49 -2 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_7_3" pos="49 3 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_7_-3" pos="49 -3 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+
+        <body name="starting_hurdle_7_4" pos="49 4 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+        <body name="starting_hurdle_7_-4" pos="49 -4 0">
+            <geom type="box" pos="-0.1 -0.47 0.01" size="0.15 0.01 0.01"/>
+        </body>
+    </body>
+
+    <!-- Collisions for each row of Hurdles -->
+    <body name="hurdles" pos="0 0 0" childclass="hurdle">
+      <geom type="box" name="hurdle1_collision" pos="7 0 0.2875" size="0.03 5 0.2875"/>
+      <geom type="box" name="hurdle2_collision" pos="14 0 0.2875" size="0.03 5 0.2875"/>
+      <geom type="box" name="hurdle3_collision" pos="21 0 0.2875" size="0.03 5 0.2875"/>
+      <geom type="box" name="hurdle4_collision" pos="28 0 0.2875" size="0.03 5 0.2875"/>
+      <geom type="box" name="hurdle5_collision" pos="35 0 0.2875" size="0.03 5 0.2875"/>
+      <geom type="box" name="hurdle6_collision" pos="42 0 0.2875" size="0.03 5 0.2875"/>
+      <geom type="box" name="hurdle7_collision" pos="49 0 0.2875" size="0.03 5 0.2875"/>
+    </body>
+  </worldbody>
+
+  <contact>
+    <pair geom1="humanoid_left_foot" geom2="floor" friction="1 1 0.1 0.1 0.1"/>
+    <pair geom1="humanoid_right_foot" geom2="floor" friction="1 1 0.1 0.1 0.1"/>
+    <pair geom1="humanoid_torso" geom2="floor" condim="1"/>
+    <pair geom1="humanoid_torso" geom2="floor_bottom" condim="1"/>
+
+    <pair geom1="humanoid_left_foot" geom2="hurdle1_collision" condim="1"/>
+    <pair geom1="humanoid_left_foot" geom2="hurdle2_collision" condim="1"/>
+    <pair geom1="humanoid_left_foot" geom2="hurdle3_collision" condim="1"/>
+    <pair geom1="humanoid_left_foot" geom2="hurdle4_collision" condim="1"/>
+    <pair geom1="humanoid_left_foot" geom2="hurdle5_collision" condim="1"/>
+    <pair geom1="humanoid_left_foot" geom2="hurdle6_collision" condim="1"/>
+    <pair geom1="humanoid_left_foot" geom2="hurdle7_collision" condim="1"/>
+
+    <pair geom1="humanoid_right_foot" geom2="hurdle1_collision" condim="1"/>
+    <pair geom1="humanoid_right_foot" geom2="hurdle2_collision" condim="1"/>
+    <pair geom1="humanoid_right_foot" geom2="hurdle3_collision" condim="1"/>
+    <pair geom1="humanoid_right_foot" geom2="hurdle4_collision" condim="1"/>
+    <pair geom1="humanoid_right_foot" geom2="hurdle5_collision" condim="1"/>
+    <pair geom1="humanoid_right_foot" geom2="hurdle6_collision" condim="1"/>
+    <pair geom1="humanoid_right_foot" geom2="hurdle7_collision" condim="1"/>
+
+    <pair geom1="humanoid_left_shin" geom2="hurdle1_collision" condim="1"/>
+    <pair geom1="humanoid_left_shin" geom2="hurdle2_collision" condim="1"/>
+    <pair geom1="humanoid_left_shin" geom2="hurdle3_collision" condim="1"/>
+    <pair geom1="humanoid_left_shin" geom2="hurdle4_collision" condim="1"/>
+    <pair geom1="humanoid_left_shin" geom2="hurdle5_collision" condim="1"/>
+    <pair geom1="humanoid_left_shin" geom2="hurdle6_collision" condim="1"/>
+    <pair geom1="humanoid_left_shin" geom2="hurdle7_collision" condim="1"/>
+
+    <pair geom1="humanoid_right_shin" geom2="hurdle1_collision" condim="1"/>
+    <pair geom1="humanoid_right_shin" geom2="hurdle2_collision" condim="1"/>
+    <pair geom1="humanoid_right_shin" geom2="hurdle3_collision" condim="1"/>
+    <pair geom1="humanoid_right_shin" geom2="hurdle4_collision" condim="1"/>
+    <pair geom1="humanoid_right_shin" geom2="hurdle5_collision" condim="1"/>
+    <pair geom1="humanoid_right_shin" geom2="hurdle6_collision" condim="1"/>
+    <pair geom1="humanoid_right_shin" geom2="hurdle7_collision" condim="1"/>
+
+    <pair geom1="humanoid_left_thigh" geom2="hurdle1_collision" condim="1"/>
+    <pair geom1="humanoid_left_thigh" geom2="hurdle2_collision" condim="1"/>
+    <pair geom1="humanoid_left_thigh" geom2="hurdle3_collision" condim="1"/>
+    <pair geom1="humanoid_left_thigh" geom2="hurdle4_collision" condim="1"/>
+    <pair geom1="humanoid_left_thigh" geom2="hurdle5_collision" condim="1"/>
+    <pair geom1="humanoid_left_thigh" geom2="hurdle6_collision" condim="1"/>
+    <pair geom1="humanoid_left_thigh" geom2="hurdle7_collision" condim="1"/>
+
+    <pair geom1="humanoid_right_thigh" geom2="hurdle1_collision" condim="1"/>
+    <pair geom1="humanoid_right_thigh" geom2="hurdle2_collision" condim="1"/>
+    <pair geom1="humanoid_right_thigh" geom2="hurdle3_collision" condim="1"/>
+    <pair geom1="humanoid_right_thigh" geom2="hurdle4_collision" condim="1"/>
+    <pair geom1="humanoid_right_thigh" geom2="hurdle5_collision" condim="1"/>
+    <pair geom1="humanoid_right_thigh" geom2="hurdle6_collision" condim="1"/>
+    <pair geom1="humanoid_right_thigh" geom2="hurdle7_collision" condim="1"/>
+
+    <pair geom1="humanoid_right_foot" geom2="humanoid_left_foot" condim="1"/>
+
+    <!-- stop clipping with humanoid left leg -->
+    <pair geom1="humanoid_left_foot" geom2="humanoid_left_thigh" condim="1"/>
+    <pair geom1="humanoid_left_foot" geom2="humanoid_butt" condim="1"/>
+    <pair geom1="humanoid_left_foot" geom2="humanoid_right_shin" condim="1"/>
+    <pair geom1="humanoid_left_foot" geom2="humanoid_right_thigh" condim="1"/>
+
+    <pair geom1="humanoid_left_shin" geom2="humanoid_right_thigh" condim="1"/>
+
+    <!-- stop clipping with humanoid right leg -->
+    <pair geom1="humanoid_right_foot" geom2="humanoid_right_thigh" condim="1"/>
+    <pair geom1="humanoid_right_foot" geom2="humanoid_butt" condim="1"/>
+    <pair geom1="humanoid_right_foot" geom2="humanoid_left_shin" condim="1"/>
+    <pair geom1="humanoid_right_foot" geom2="humanoid_left_thigh" condim="1"/>
+
+    <pair geom1="humanoid_right_shin" geom2="humanoid_left_thigh" condim="1"/>
+  </contact>
+
+  <actuator>
+    <!-- Actuators for humanoid -->
+    <motor gear="100" joint="humanoid_abdomen_y" name="humanoid_abdomen_y"/>
+    <motor gear="100" joint="humanoid_abdomen_z" name="humanoid_abdomen_z"/>
+    <motor gear="100" joint="humanoid_abdomen_x" name="humanoid_abdomen_x"/>
+    <motor gear="100" joint="humanoid_right_hip_x" name="humanoid_right_hip_x"/>
+    <motor gear="100" joint="humanoid_right_hip_z" name="humanoid_right_hip_z"/>
+    <motor gear="300" joint="humanoid_right_hip_y" name="humanoid_right_hip_y"/>
+    <motor gear="200" joint="humanoid_right_knee" name="humanoid_right_knee"/>
+    <motor gear="100" joint="humanoid_left_hip_x" name="humanoid_left_hip_x"/>
+    <motor gear="100" joint="humanoid_left_hip_z" name="humanoid_left_hip_z"/>
+    <motor gear="300" joint="humanoid_left_hip_y" name="humanoid_left_hip_y"/>
+    <motor gear="200" joint="humanoid_left_knee" name="humanoid_left_knee"/>
+    <motor gear="25" joint="humanoid_right_shoulder1" name="humanoid_right_shoulder1"/>
+    <motor gear="25" joint="humanoid_right_shoulder2" name="humanoid_right_shoulder2"/>
+    <motor gear="25" joint="humanoid_right_elbow" name="humanoid_right_elbow"/>
+    <motor gear="25" joint="humanoid_left_shoulder1" name="humanoid_left_shoulder1"/>
+    <motor gear="25" joint="humanoid_left_shoulder2" name="humanoid_left_shoulder2"/>
+    <motor gear="25" joint="humanoid_left_elbow" name="humanoid_left_elbow"/>
+  </actuator>
+
+  <sensor>
+    <rangefinder name="humanoid_ray_00" site="humanoid_ray_00"/>
+    <rangefinder name="humanoid_ray_01" site="humanoid_ray_01"/>
+    <rangefinder name="humanoid_ray_02" site="humanoid_ray_02"/>
+    <rangefinder name="humanoid_ray_03" site="humanoid_ray_03"/>
+    <rangefinder name="humanoid_ray_04" site="humanoid_ray_04"/>
+
+    <rangefinder name="humanoid_ray_05" site="humanoid_ray_05"/>
+    <rangefinder name="humanoid_ray_06" site="humanoid_ray_06"/>
+    <rangefinder name="humanoid_ray_07" site="humanoid_ray_07"/>
+    <rangefinder name="humanoid_ray_08" site="humanoid_ray_08"/>
+    <rangefinder name="humanoid_ray_09" site="humanoid_ray_09"/>
+
+    <rangefinder name="humanoid_ray_10" site="humanoid_ray_10"/>
+    <rangefinder name="humanoid_ray_11" site="humanoid_ray_11"/>
+    <rangefinder name="humanoid_ray_12" site="humanoid_ray_12"/>
+    <rangefinder name="humanoid_ray_13" site="humanoid_ray_13"/>
+    <rangefinder name="humanoid_ray_14" site="humanoid_ray_14"/>
+
+    <rangefinder name="humanoid_ray_15" site="humanoid_ray_15"/>
+    <rangefinder name="humanoid_ray_16" site="humanoid_ray_16"/>
+    <rangefinder name="humanoid_ray_17" site="humanoid_ray_17"/>
+    <rangefinder name="humanoid_ray_18" site="humanoid_ray_18"/>
+    <rangefinder name="humanoid_ray_19" site="humanoid_ray_19"/>
+
+    <rangefinder name="humanoid_ray_20" site="humanoid_ray_20"/>
+    <rangefinder name="humanoid_ray_21" site="humanoid_ray_21"/>
+    <rangefinder name="humanoid_ray_22" site="humanoid_ray_22"/>
+    <rangefinder name="humanoid_ray_23" site="humanoid_ray_23"/>
+    <rangefinder name="humanoid_ray_24" site="humanoid_ray_24"/>
+
+    <rangefinder name="humanoid_ray_25" site="humanoid_ray_25"/>
+    <rangefinder name="humanoid_ray_26" site="humanoid_ray_26"/>
+    <rangefinder name="humanoid_ray_27" site="humanoid_ray_27"/>
+    <rangefinder name="humanoid_ray_28" site="humanoid_ray_28"/>
+    <rangefinder name="humanoid_ray_29" site="humanoid_ray_29"/>
+  </sensor>
+</mujoco>
+
+

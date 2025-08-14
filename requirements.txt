@@ -1,0 +1,7 @@
+jax[cuda12]
+brax
+matplotlib
+opencv-python
+imageio[ffmpeg]
+python-vlc
+tqdm

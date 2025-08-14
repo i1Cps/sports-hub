@@ -1,0 +1,265 @@
+<mujoco model="sprint_humanoid">
+  <option timestep="0.004" iterations="1" ls_iterations="5" solver="Newton">
+    <flag eulerdamp="disable"/>
+  </option>
+
+  <statistic center="0 0 0.1" extent="10.0" meansize="0.04"/>
+
+  <visual>
+    <rgba force="1 0 0 1" haze = "0.71 0.71 0.71 0.51" fog="0.71 0.71 0.71 1"/>
+    <global azimuth="140" elevation="-20" offwidth="1280" offheight="720"/>
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.71 0.71 0.71" rgb2="0.71 0.71 0.71" width="800" height="800"/>
+    <texture name="grass" type="2d" builtin="checker" width="512" height="512" rgb1="0.133 0.745 0.133" rgb2="0.486 0.988 0.0"/>
+    <texture name="trunk" type="cube" builtin="flat" width="128" height="128" rgb1="0.545 0.271 0.075" rgb2="0.545 0.271 0.075"/>
+    <texture name="foliage" type="cube" builtin="flat" width="128" height="128" rgb1="0.133 0.545 0.133" rgb2="0.133 0.545 0.133"/>
+    <texture name="orange_brown_checkers" type="2d" builtin="checker" width="512" height="512" rgb1="0.988 0.729 0.012" rgb2="0.918 0.714 0.463"/>
+    <texture name="black_white_checkers" type="2d" builtin="checker" width="512" height="512" rgb1="0 0 0" rgb2="1 1 1"/>
+
+    <material name="body" rgba=".7 .5 .3 1" specular="0.9" shininess="0.8"/>
+    <material name="track" texture="orange_brown_checkers" texrepeat="1 1" texuniform="true" reflectance="0.2"/>
+    <material name="grass" texture="grass" texrepeat="1 1" texuniform="true" reflectance="0.2"/>
+    <material name="trunk" texture="trunk" texuniform="true"/>
+    <material name="foliage" texture="foliage" texuniform="true"/>
+    <material name="finish_line" texture="black_white_checkers" texrepeat="2 10"/>
+  </asset>
+
+  <default>
+    <geom condim="3" contype="0" conaffinity="0"/>
+    <joint armature="1" damping="1" limited="true"/>
+    <motor ctrllimited="true" ctrlrange="-.4 .4"/>
+    <default class="humanoid">
+      <geom type="capsule" material="body"/>
+    </default>
+  </default>
+
+  <worldbody>
+    <!-- Building out the track -->
+    <geom name="track" type="plane" material="track" pos="30 0 0" size="50 5 0.125" rgba="0.2 0.2 0.2 1.0"/>
+    <geom name="side_railing1" type="box" pos="30 5 0.2" size="50.05 0.05 0.06" rgba="0.9 0.3 0.3 0.61"/>
+    <geom name="side_railing2" type="box" pos="30 -5 0.2" size="50.05 0.05 0.06" rgba="0.9 0.3 0.3 0.61"/>
+    <geom name="back_railing" type="box" pos="-20 0 0.2" size="0.05 5.05 0.06" rgba="0.9 0.3 0.3 0.61"/>
+    <geom name="front_railing" type="box" pos="80 0 0.2" size="0.05 5.05 0.06" rgba="0.9 0.3 0.3 0.61"/>
+    <geom name="finish_line" type="box" pos="70 0 0.001" size="1 5 0.001" material="finish_line"/>
+
+    <geom name="grass_right" type="plane" material="grass" pos="30 35 0.150" size="50 30 0.125" rgba="0.2 0.2 0.2 1.0"/>
+    <geom name="grass_left" type="plane" material="grass" pos="30 -35 0.150" size="50 30 0.125" rgba="0.2 0.2 0.2 1.0"/>
+    <geom name="grass_front" type="plane" material="grass" pos="111 0 0.150" size="31 65 0.125" rgba="0.2 0.2 0.2 1.0"/>
+    <geom name="grass_back" type="plane" material="grass" pos="-51 0 0.150" size="31 65 0.125" rgba="0.2 0.2 0.2 1.0" />
+    <geom name="grass" type="plane" material="grass" pos="0 0 -2.150" size="0 0 0.125" rgba="0.2 0.2 0.2 1.0"/> 
+
+    <light name="ambient_light" pos="0 0 5000" dir="0 0 -1" ambient="0.41 0.41 0.41" diffuse="0.3 0.3 0.3" specular="0.1 0.1 0.1" mode="fixed" castshadow="false"/>
+
+    <!-- Humanoid -->
+    <body name="humanoid" childclass="humanoid" pos="0 0 1.40">
+      <light name="tracking_light" pos="0 0 7" dir="0 0 -1" specular="0.8 0.8 0.8" mode="trackcom"/>
+      <camera name="cam_default" mode="trackcom" pos="3.659 -8.426 1.448" xyaxes="0.932 0.363 0.000 -0.075 0.193 0.978"/>
+      <site name="humanoid" size="0.01" pos="-0 0 -0"/>
+      <joint name="humanoid_root" type="free" armature="0" damping="0" limited="false" pos="0 0 0" stiffness="0"/>
+      <geom name="humanoid_torso" fromto="0 -.07 0 0 .07 0" size="0.07" type="capsule"/>
+      <geom name="humanoid_head" pos="0 0 .19" size=".09" type="sphere"/>
+      <geom name="humanoid_uwaist" fromto="-.01 -.06 -.12 -.01 .06 -.12" size="0.06" type="capsule"/>
+      <body name="humanoid_lwaist" pos="-.01 0 -0.260" quat="1.000 0 -0.002 0">
+        <geom name="humanoid_lwaist" fromto="0 -.06 0 0 .06 0" size="0.06" type="capsule"/>
+        <joint name="humanoid_abdomen_z" armature="0.02" axis="0 0 1" damping="5" pos="0 0 0.065" range="-45 45" stiffness="20" type="hinge"/>
+        <joint name="humanoid_abdomen_y" armature="0.02" axis="0 1 0" damping="5" pos="0 0 0.065" range="-75 30" stiffness="10" type="hinge"/>
+        <body name="humanoid_pelvis" pos="0 0 -0.165" quat="1.000 0 -0.002 0">
+          <joint name="humanoid_abdomen_x" armature="0.02" axis="1 0 0" damping="5" pos="0 0 0.1" range="-35 35" stiffness="10" type="hinge"/>
+          <geom name="humanoid_butt" fromto="-.02 -.07 0 -.02 .07 0" size="0.09" type="capsule"/>
+          <body name="humanoid_right_thigh" pos="0 -0.1 -0.04">
+            <joint name="humanoid_right_hip_x" armature="0.01" axis="1 0 0" damping="5" pos="0 0 0" range="-25 5" stiffness="10" type="hinge"/>
+            <joint name="humanoid_right_hip_z" armature="0.01" axis="0 0 1" damping="5" pos="0 0 0" range="-60 35" stiffness="10" type="hinge"/>
+            <joint name="humanoid_right_hip_y" armature="0.0080" axis="0 1 0" damping="5" pos="0 0 0" range="-110 20" stiffness="20" type="hinge"/>
+            <geom name="humanoid_right_thigh" fromto="0 0 0 0 0.01 -.34" size="0.06" type="capsule"/>
+            <body name="humanoid_right_shin" pos="0 0.01 -0.403">
+              <joint name="humanoid_right_knee" armature="0.0060" axis="0 -1 0" pos="0 0 .02" range="-160 -2" type="hinge"/>
+              <geom name="humanoid_right_shin" fromto="0 0 0 0 0 -.3" size="0.049" type="capsule"/>
+              <body name="humanoid_right_foot" pos="0 0 -0.45">
+                <geom name="humanoid_right_foot" pos="0 0 0.1" size="0.075" type="sphere"/>
+              </body>
+            </body>
+          </body>
+          <body name="humanoid_left_thigh" pos="0 0.1 -0.04">
+            <joint name="humanoid_left_hip_x" armature="0.01" axis="-1 0 0" damping="5" pos="0 0 0" range="-25 5" stiffness="10" type="hinge"/>
+            <joint name="humanoid_left_hip_z" armature="0.01" axis="0 0 -1" damping="5" pos="0 0 0" range="-60 35" stiffness="10" type="hinge"/>
+            <joint name="humanoid_left_hip_y" armature="0.01" axis="0 1 0" damping="5" pos="0 0 0" range="-110 20" stiffness="20" type="hinge"/>
+            <geom name="humanoid_left_thigh" fromto="0 0 0 0 -0.01 -.34" size="0.06" type="capsule"/>
+            <body name="humanoid_left_shin" pos="0 -0.01 -0.403">
+              <joint name="humanoid_left_knee" armature="0.0060" axis="0 -1 0" pos="0 0 .02" range="-160 -2" stiffness="1" type="hinge"/>
+              <geom name="humanoid_left_shin" fromto="0 0 0 0 0 -.3" size="0.049" type="capsule"/>
+              <body name="humanoid_left_foot" pos="0 0 -0.45">
+                <geom name="humanoid_left_foot" type="sphere" size="0.075" pos="0 0 0.1"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="humanoid_right_upper_arm" pos="0 -0.17 0.06">
+        <joint name="humanoid_right_shoulder1" armature="0.0068" axis="2 1 1" pos="0 0 0" range="-85 60" stiffness="1" type="hinge"/>
+        <joint name="humanoid_right_shoulder2" armature="0.0051" axis="0 -1 1" pos="0 0 0" range="-85 60" stiffness="1" type="hinge"/>
+        <geom name="humanoid_right_uarm" fromto="0 0 0 .16 -.16 -.16" size="0.04 0.16" type="capsule"/>
+        <body name="humanoid_right_lower_arm" pos=".18 -.18 -.18">
+          <joint name="humanoid_right_elbow" armature="0.0028" axis="0 -1 1" pos="0 0 0" range="-90 50" stiffness="0" type="hinge"/>
+          <geom name="humanoid_right_larm" fromto="0.01 0.01 0.01 .17 .17 .17" size="0.031" type="capsule"/>
+          <geom name="humanoid_right_hand" pos=".18 .18 .18" size="0.04" type="sphere"/>
+        </body>
+      </body>
+      <body name="humanoid_left_upper_arm" pos="0 0.17 0.06">
+        <joint name="humanoid_left_shoulder1" armature="0.0068" axis="2 -1 1" pos="0 0 0" range="-60 85" stiffness="1" type="hinge"/>
+        <joint name="humanoid_left_shoulder2" armature="0.0051" axis="0 1 1" pos="0 0 0" range="-60 85" stiffness="1" type="hinge"/>
+        <geom name="humanoid_left_uarm" fromto="0 0 0 .16 .16 -.16" size="0.04 0.16" type="capsule"/>
+        <body name="humanoid_left_lower_arm" pos=".18 .18 -.18">
+          <joint name="humanoid_left_elbow" armature="0.0028" axis="0 -1 -1" pos="0 0 0" range="-90 50" stiffness="0" type="hinge"/>
+          <geom name="humanoid_left_larm" fromto="0.01 -0.01 0.01 .17 -.17 .17" size="0.031" type="capsule"/>
+          <geom name="humanoid_left_hand" pos=".18 -.18 .18" size="0.04" type="sphere"/>
+        </body>
+      </body>
+    </body>
+
+    <body name="trees">
+      <body name="tree1" pos="40 25 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree2" pos="25 28 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree3" pos="45 30 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree4" pos="20 -25 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree5" pos="30 -30 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree6" pos="50 22 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree7" pos="15 27 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree8" pos="35 35 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree9" pos="10 20 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree10" pos="55 15 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree11" pos="5 -20 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree12" pos="45 -25 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree13" pos="25 -30 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree14" pos="40 -35 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree15" pos="30 40 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree16" pos="15 35 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree17" pos="50 -15 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree18" pos="10 -25 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree19" pos="55 -10 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree20" pos="5 10 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree21" pos="45 30 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree22" pos="20 35 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree23" pos="35 -35 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree24" pos="30 -40 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+      <body name="tree25" pos="15 -35 0">
+        <geom size="0.3 3" pos="0 0 1.5" type="cylinder" material="trunk"/>
+        <geom size="1.5" pos="0 0 4.5" material="foliage"/>
+      </body>
+    </body>
+
+  </worldbody>
+
+  <contact>
+    <!-- Floor contacts -->
+    <pair geom1="humanoid_left_foot" geom2="track" friction="1 1 0.1 0.1 0.1"/>
+    <pair geom1="humanoid_right_foot" geom2="track" friction="1 1 0.1 0.1 0.1"/>
+
+    <!-- Self contacts -->
+    <pair geom1="humanoid_right_foot" geom2="humanoid_left_foot" condim="1"/>
+    <pair geom1="humanoid_left_foot" geom2="humanoid_left_thigh" condim="1"/>
+    <pair geom1="humanoid_left_foot" geom2="humanoid_butt" condim="1"/>
+    <pair geom1="humanoid_left_foot" geom2="humanoid_right_shin" condim="1"/>
+    <pair geom1="humanoid_left_foot" geom2="humanoid_right_thigh" condim="1"/>
+    <pair geom1="humanoid_right_foot" geom2="humanoid_right_thigh" condim="1"/>
+    <pair geom1="humanoid_right_foot" geom2="humanoid_butt" condim="1"/>
+    <pair geom1="humanoid_right_foot" geom2="humanoid_left_shin" condim="1"/>
+    <pair geom1="humanoid_right_foot" geom2="humanoid_left_thigh" condim="1"/>
+    <pair geom1="humanoid_left_shin" geom2="humanoid_right_thigh" condim="1"/>
+    <pair geom1="humanoid_right_shin" geom2="humanoid_left_thigh" condim="1"/>
+  </contact>
+
+  <actuator>
+    <motor gear="100" joint="humanoid_abdomen_y" name="humanoid_abdomen_y"/>
+    <motor gear="100" joint="humanoid_abdomen_z" name="humanoid_abdomen_z"/>
+    <motor gear="100" joint="humanoid_abdomen_x" name="humanoid_abdomen_x"/>
+    <motor gear="100" joint="humanoid_right_hip_x" name="humanoid_right_hip_x"/>
+    <motor gear="100" joint="humanoid_right_hip_z" name="humanoid_right_hip_z"/>
+    <motor gear="300" joint="humanoid_right_hip_y" name="humanoid_right_hip_y"/>
+    <motor gear="200" joint="humanoid_right_knee" name="humanoid_right_knee"/>
+    <motor gear="100" joint="humanoid_left_hip_x" name="humanoid_left_hip_x"/>
+    <motor gear="100" joint="humanoid_left_hip_z" name="humanoid_left_hip_z"/>
+    <motor gear="300" joint="humanoid_left_hip_y" name="humanoid_left_hip_y"/>
+    <motor gear="200" joint="humanoid_left_knee" name="humanoid_left_knee"/>
+    <motor gear="25" joint="humanoid_right_shoulder1" name="humanoid_right_shoulder1"/>
+    <motor gear="25" joint="humanoid_right_shoulder2" name="humanoid_right_shoulder2"/>
+    <motor gear="25" joint="humanoid_right_elbow" name="humanoid_right_elbow"/>
+    <motor gear="25" joint="humanoid_left_shoulder1" name="humanoid_left_shoulder1"/>
+    <motor gear="25" joint="humanoid_left_shoulder2" name="humanoid_left_shoulder2"/>
+    <motor gear="25" joint="humanoid_left_elbow" name="humanoid_left_elbow"/>
+  </actuator>
+</mujoco>
+

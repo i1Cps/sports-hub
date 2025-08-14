@@ -1,0 +1,30 @@
+{
+  "ppo_train_params": {
+    "num_timesteps": 350000000,
+    "learning_rate": 0.0001,
+    "num_envs": 8192,
+    "unroll_length": 25,
+    "batch_size": 256,
+    "episode_length": 2000,
+    "num_minibatches": 64,
+    "num_updates_per_batch": 8,
+    "discounting": 0.99,
+    "entropy_cost": 0.01,
+    "max_grad_norm": 1.0,
+    "clipping_epsilon": 0.2,
+    "seed": 70,
+    "num_evals": 15,
+    "action_repeat": 1,
+    "reward_scaling": 0.01,
+    "normalize_observations": true,
+    "network_factory": {
+      "policy_hidden_layer_sizes": [512, 256, 128, 128]
+    }
+  },
+  "render_inference_per_frame": false,
+  "num_inference_rollouts": 5,
+  "num_inference_steps": 2000,
+  "num_preview_rollouts": 1,
+  "eval_env": true,
+  "max_y": 15000
+}
