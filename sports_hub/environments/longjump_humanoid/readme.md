@@ -2,12 +2,14 @@
   <h1>Long jump Humanoid</h1>
 </div>
 
-<img width="1818" height="730" alt="humanoid_longjump" src="https://github.com/user-attachments/assets/aafb4e89-1c77-49dc-95f3-c84c429c719a" />
+<a href="https://demo.sports-hub.tech">
+  <img width="1818" height="730" alt="longjump_humanoid_github" src="https://github.com/user-attachments/assets/00b0d780-b7e1-4e3b-8d53-1100b60a98cf" />
+</a>
 
 <br/>
 
 <p align="center">
-  <a href="https://i1cps.github.io/Sports-Hub-Website/"><strong>🔗 Click for live demo </strong></a>
+  <a href="https://demo.sports-hub.tech"><strong>🔗 Click for live demo </strong></a>
 </p>
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png)
