@@ -9,7 +9,7 @@
 <br/>
 
 <p align="center">
-  <a href="https://i1cps.github.io/Sports-Hub-Website/"><strong>🔗 Check out the website for live demo's here</strong></a>
+  <a href="https://sports-hub.tech/"><strong>🔗 Check out the website for live demo's here</strong></a>
 </p>
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png)
