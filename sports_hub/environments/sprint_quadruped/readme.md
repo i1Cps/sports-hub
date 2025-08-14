@@ -2,12 +2,12 @@
   <h1>Sprint Quadruped</h1>
 </div>
 
-<img width="1818" height="730" alt="quadruped_sprint" src="https://github.com/user-attachments/assets/fd9a904c-7bb6-47ca-b4ae-ce2dfd81cf9d" />
+<img width="1818" height="730" alt="sprint_quadruped_github" src="https://github.com/user-attachments/assets/3cc72458-9624-4eab-9251-48014a90fe3c" />
 
 <br/>
 
 <p align="center">
-  <a href="https://i1cps.github.io/Sports-Hub-Website/"><strong>🔗 Click for live demo </strong></a>
+  <a href="https://demo.sports-hub.tech"><strong>🔗 Click for live demo </strong></a>
 </p>
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png)
