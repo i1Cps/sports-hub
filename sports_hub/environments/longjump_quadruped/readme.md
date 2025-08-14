@@ -2,12 +2,14 @@
   <h1>Long Jump Quadruped</h1>
 </div>
 
-<img width="1818" height="730" alt="quadruped_longjump" src="https://github.com/user-attachments/assets/c3598a81-0f77-4380-99c3-4388cad40d79" />
+<a href="https://demo.sports-hub.tech">
+  <img width="1818" height="730" alt="longjump_quadruped_github" src="https://github.com/user-attachments/assets/70688817-2bda-435b-b1e7-6688bc14bce0" />
+</a>
 
 <br/>
 
 <p align="center">
-  <a href="https://i1cps.github.io/Sports-Hub-Website/"><strong>🔗 Click for live demo </strong></a>
+  <a href="https://demo.sports-hub.tech"><strong>🔗 Click for live demo </strong></a>
 </p>
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png)
