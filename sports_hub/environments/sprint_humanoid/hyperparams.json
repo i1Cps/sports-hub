@@ -1,6 +1,6 @@
 {
   "ppo_train_params": {
-    "num_timesteps": 40000000,
+    "num_timesteps": 80000000,
     "learning_rate": 0.0003,
     "num_envs": 4096,
     "unroll_length": 10,
