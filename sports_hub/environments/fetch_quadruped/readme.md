@@ -2,12 +2,14 @@
   <h1>Fetch Quadruped</h1>
 </div>
 
-<img width="1818" height="730" alt="quadruped_fetch" src="https://github.com/user-attachments/assets/b79ebfb0-3dd8-44d3-bb7e-c5340a529460" />
+<a href="https://demo.sports-hub.tech">
+  <img width="1818" height="730" alt="fetch_quadruped_github" src="https://github.com/user-attachments/assets/c92dd204-8aa8-49f8-83d6-c022cb5fa2f4" />
+</a>
 
 <br/>
 
 <p align="center">
-  <a href="https://i1cps.github.io/Sports-Hub-Website/"><strong>🔗 Click for live demo </strong></a>
+  <a href="https://demo.sports-hub.tech"><strong>🔗 Click for live demo </strong></a>
 </p>
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png)
