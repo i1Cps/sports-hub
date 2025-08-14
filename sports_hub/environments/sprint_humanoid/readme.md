@@ -2,12 +2,14 @@
   <h1>Sprint Humanoid</h1>
 </div>
 
-<img width="1818" height="730" alt="Untitled design" src="https://github.com/user-attachments/assets/8dd6465b-d1b0-40fc-ba24-172f517f63f6" />
+<a href="https://demo.sports-hub.tech">
+  <img width="1818" height="730" alt="sprint_humanoid_github" src="https://github.com/user-attachments/assets/cb8530f9-dc8f-48cf-9e0a-15eda320a5b9" />
+</a>
 
 <br/>
 
 <p align="center">
-  <a href="https://i1cps.github.io/Sports-Hub-Website/"><strong>🔗 Click for live demo </strong></a>
+  <a href="https://demo.sports-hub.tech"><strong>🔗 Click for live demo </strong></a>
 </p>
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png)
